@@ -10,9 +10,7 @@ include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=kzorp
 PKG_VERSION:=6.0.0
-
-PKG_LICENSE:=GPLv2
-PKG_LICENSE_FILES:=
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/balabit/kzorp.git
@@ -21,8 +19,8 @@ PKG_SOURCE_VERSION:=openwrt
 PKG_SOURCE_PROTO:=git
 
 PKG_FIXUP:=autoreconf
-PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
 PKG_INSTALL:=1
+PKG_LICENSE:=GPLv2
 
 PKG_MAINTAINER:=Szilard Pfeiffer <coroner@balabit.hu>
 
