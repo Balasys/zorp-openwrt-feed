@@ -113,9 +113,26 @@ define Package/kzorp/install
 		$(1)/lib/modules/3.10$(LINUX_VERSION-3.10)
 endef
 
+define Package/kzorp/postinst
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/scripts/firewall.kzorp $(1)/etc/
+	echo -e "\nconfig include\n\toption path /etc/firewall.kzorp" >> $(1)/etc/config/firewall
+	echo -e "\n#zorp\n\n100\ttproxy\n" >> $(1)/etc/iproute2/rt_tables
+	ip -4 rule add fwmark 0x80000000/0x80000000 lookup tproxy
+	ip -4 route add local default dev lo table tproxy
+	$(1)/etc/init.d/firewall restart
+endef
+
+define Package/kzorp/postrm
+	rm -f $(1)/etc/firewall.kzorp
+	sed -i -e '/zorp/d' -e '/config include\t\noption path /etc/firewall.kzorp/d' $(1)/etc/config/firewall
+	ip -4 rule delete fwmark 0x80000000/0x80000000 lookup tproxy
+	ip route flush table tproxy
+	sed -i -e '/zorp/d' -e '/100\ttproxy/d' $(1)/etc/iproute2/rt_tables
+	$(1)/etc/init.d/firewall restart
+endef
+
 $(eval $(call KernelPackage,kzorp))
 $(eval $(call KernelPackage,kzorp-target))
 $(eval $(call KernelPackage,kzorp-socket-match))
 $(eval $(call KernelPackage,service-match))
 $(eval $(call KernelPackage,zone-match))
-$(eval $(call BuildPackage,kzorp))

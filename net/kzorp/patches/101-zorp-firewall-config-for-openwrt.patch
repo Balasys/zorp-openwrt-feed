@@ -1,0 +1,28 @@
+diff --git a/zorp/firewall.zorp b/zorp/firewall.zorp
+new file mode 100644
+index 0000000..a05922c
+--- /dev/null
++++ b/kzorp/scripts/firewall.zorp
+@@ -0,0 +1,22 @@
++iptables -t mangle -N zorp_mark_existing_service
++iptables -t mangle -A zorp_mark_existing_service -m socket --transparent -j MARK --set-xmark 0x80000000/0x80000000
++iptables -t mangle -A zorp_mark_existing_service -m mark --mark 0x80000000/0x80000000 --jump ACCEPT
++
++#iptables -t mangle -N zorp_jump_to_kzorp
++#iptables -t mangle -A zorp_jump_to_kzorp -j KZORP --tproxy-mark 0x80000000/0x80000000 --jump ACCEPT
++
++iptables -t mangle -A PREROUTING -j zorp_mark_existing_service
++#iptables -t mangle -A PREROUTING -j zorp_jump_to_kzorp
++
++iptables -t mangle -A INPUT -j zorp_mark_existing_service
++
++#iptables -t mangle -A FORWARD -j zorp_jump_to_kzorp
++
++#iptables -t mangle -A POSTROUTING -j zorp_jump_to_kzorp
++
++iptables -t filter -N zorp
++#iptables -t filter -A zorp -m contrack ! --ctstate INVALID -m service --service-type forward -j ACCEPT
++iptables -t filter -A zorp -m mark --mark 0x80000000/0x80000000 --jump ACCEPT
++
++iptables -t filter -A INPUT -j zorp
++iptables -t filter -A FORWARD -j zorp
