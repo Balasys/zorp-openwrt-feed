@@ -74,8 +74,9 @@ define Package/kzorp
   CATEGORY:=Network
   SUBMENU:=Firewall
   TITLE:=kZorp binaries
-  DEPENDS:= +python +python-daemon +python-radix +pydns python-prctl +kmod-kzorp +kmod-kzorp-target +kmod-service-match +kmod-zone-match +kmod-kzorp-socket-match
+  DEPENDS:= +python +python-daemon +python-radix +pydns python-prctl
 endef
+# +kmod-kzorp +kmod-kzorp-target +kmod-service-match +kmod-zone-match +kmod-kzorp-socket-match
 
 MAKE_OPTS:= \
 	ARCH="$(LINUX_KARCH)" \
