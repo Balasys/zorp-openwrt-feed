@@ -1,7 +1,7 @@
 Index: zorp/zorpctl/zorpctl.conf
 ===================================================================
---- zorp.orig/zorpctl/zorpctl.conf	2014-07-22 11:39:46.000000000 +0200
-+++ zorp/zorpctl/zorpctl.conf	2014-07-22 11:49:04.856996126 +0200
+--- a/zorpctl/zorpctl.conf	2014-07-22 11:39:46.000000000 +0200
++++ b/zorpctl/zorpctl.conf	2014-07-22 11:49:04.856996126 +0200
 @@ -26,13 +25,13 @@
  
  # whether to check /etc/zorp permissions

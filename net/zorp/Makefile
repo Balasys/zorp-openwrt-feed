@@ -9,29 +9,25 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zorp
 PKG_VERSION:=6.0.0
-PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE:=$(PKG_SOURCE_SUBDIR).tar.gz
 PKG_SOURCE_URL:=https://github.com/balabit/zorp.git
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=6.0
+PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
-PKG_MAINTAINER:=Szilárd Pfeiffer <coroner@balabit.hu>
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
+HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_SOURCE_SUBDIR)
+
 PKG_LICENSE:=GPL-2.0
 
-PKG_FIXUP:=./autogen.sh
+PKG_INSTALL:=1
 
 TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include/zorp -std=c++11 -fPIC
 TARGET_LDFLAGS += -L$(STAGING_DIR)/usr/lib -pthread -lz
 
 include $(INCLUDE_DIR)/package.mk
-
-define Package/zorp/Default
-  SECTION:=net
-  CATEGORY:=Network
-  SUBMENU:=Firewall
-endef
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/zorp
 $(call Package/zorp/Default,)
@@ -40,6 +36,7 @@ $(call Package/zorp/Default,)
 endef
 
 define Build/Configure
+	(cd $(PKG_BUILD_DIR); ./autogen.sh );
 	$(call Build/Configure/Default,--with-pidfiledir=/var/run)
 endef
 
