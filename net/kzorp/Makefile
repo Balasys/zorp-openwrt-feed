@@ -19,10 +19,11 @@ PKG_SOURCE_VERSION:=openwrt
 PKG_SOURCE_PROTO:=git
 
 PKG_FIXUP:=autoreconf
+PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
 PKG_INSTALL:=1
 PKG_LICENSE:=GPLv2
 
-PKG_MAINTAINER:=Szilard Pfeiffer <coroner@balabit.hu>
+PKG_MAINTAINER:=SzilÃrd Pfeiffer <coroner@balabit.hu>
 
 include $(INCLUDE_DIR)/package.mk
 $(call include_mk, python-package.mk)
@@ -69,20 +70,22 @@ $(call KernelPackage/kernel-zorp/Default,)
   FILES:=$(PKG_BUILD_DIR)/driver/xt_zone.ko
 endef
 
+define Build/Compile/PyMod
+endef
+
 define Package/kzorp
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Firewall
   TITLE:=kZorp binaries
-  DEPENDS:= +python +python-daemon +python-radix +pydns python-prctl
+  DEPENDS:= +python +python-daemon +python-radix +pydns +python-prctl +kmod-kzorp +kmod-kzorp-target +kmod-service-match +kmod-zone-match +kmod-kzorp-socket-match
 endef
-# +kmod-kzorp +kmod-kzorp-target +kmod-service-match +kmod-zone-match +kmod-kzorp-socket-match
 
 MAKE_OPTS:= \
 	ARCH="$(LINUX_KARCH)" \
 	CROSS_COMPILE="$(TARGET_CROSS)" \
 	SUBDIRS="$(PKG_BUILD_DIR)/driver" \
-	EXTRA_CFLAGS="-I$(PKG_BUILD_DIR)/driver/include"
+	EXTRA_CFLAGS="-I$(PKG_BUILD_DIR)/driver/include -DWITH_KZ_TPROXY_CORE_H"
 
 define Build/Compile
 	$(call Build/Compile/PyMod,,install --prefix=/usr --root=$(PKG_INSTALL_DIR))
